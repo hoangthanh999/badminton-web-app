@@ -1,0 +1,254 @@
+/* Courts.css - VERSION FIX HOÀN TOÀN */
+
+/* ===== COURTS PAGE ===== */
+.courts-page {
+    background-color: var(--color-background);
+    min-height: 100vh;
+    /* ✅ CHỈ .courts-page có min-height */
+}
+
+/* ===== PAGE HEADER (GRADIENT SECTION) ===== */
+.page-header {
+    /* ❌ KHÔNG có min-height: 100vh ở đây! */
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: white;
+    padding: 1.25rem 0;
+    /* Nhỏ gọn */
+    margin-bottom: var(--spacing-xl);
+}
+
+.page-header .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.page-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+}
+
+.page-header p {
+    font-size: 0.875rem;
+    opacity: 0.95;
+    margin: 0;
+}
+
+/* ===== SEARCH SECTION ===== */
+.search-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* ===== COURTS GRID ===== */
+.courts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+/* ===== COURT CARD ===== */
+.court-card {
+    overflow: hidden;
+    padding: 0 !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.court-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.court-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.court-content {
+    padding: var(--spacing-lg);
+}
+
+.court-content h3 {
+    margin: 0 0 var(--spacing-sm);
+    font-size: 1.125rem;
+    color: #0F172A;
+    /* ✅ FIX: Đen đậm */
+    font-weight: 600;
+}
+
+.court-address {
+    margin: var(--spacing-sm) 0;
+    color: #475569;
+    /* ✅ FIX: Gray-600 */
+    font-size: 0.875rem;
+}
+
+.court-price {
+    margin: var(--spacing-sm) 0;
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.court-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-size: 0.875rem;
+    color: #64748B;
+    /* ✅ FIX: Gray-500 */
+    margin-top: var(--spacing-md);
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.empty-state h3 {
+    margin-bottom: var(--spacing-md);
+    color: #0F172A;
+    /* ✅ FIX: Đen đậm */
+    font-weight: 600;
+}
+
+.empty-state p {
+    color: #64748B;
+    /* ✅ FIX: Gray-500 */
+    line-height: 1.6;
+}
+
+/* ===== COURT DETAIL PAGE ===== */
+.court-detail-page {
+    background-color: var(--color-background);
+    min-height: 100vh;
+    padding: var(--spacing-xl) 0;
+}
+
+.court-images {
+    margin-bottom: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.main-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.court-price-big {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: var(--spacing-md) 0;
+}
+
+.court-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-lg);
+    background: var(--color-background);
+    border-radius: var(--radius-md);
+}
+
+.info-item {
+    font-size: 0.9375rem;
+    color: #0F172A;
+    /* ✅ FIX: Đen đậm */
+}
+
+.info-item strong {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: #64748B;
+    /* ✅ FIX: Gray-500 cho label */
+    font-weight: 600;
+}
+
+.description-section {
+    margin: var(--spacing-xl) 0;
+}
+
+.description-section h3 {
+    margin-bottom: var(--spacing-md);
+}
+
+.description-section p {
+    line-height: 1.7;
+    color: #475569;
+    /* ✅ FIX: Gray-600 */
+}
+
+.facilities-section {
+    margin: var(--spacing-xl) 0;
+}
+
+.facilities-section h3 {
+    margin-bottom: var(--spacing-md);
+}
+
+.facilities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.facility-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 200, 83, 0.1);
+    color: var(--color-primary);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .courts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        padding: 1rem 0;
+    }
+
+    .page-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .page-header p {
+        font-size: 0.8125rem;
+    }
+
+    .main-image {
+        height: 250px;
+    }
+
+    .court-price-big {
+        font-size: 1.5rem;
+    }
+
+    .court-info-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .court-content {
+        padding: var(--spacing-md);
+    }
+
+    .court-meta {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+}
