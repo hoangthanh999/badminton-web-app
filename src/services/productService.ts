@@ -4,7 +4,8 @@ import {
     Product,
     ProductDetail,
     ProductCategory,
-    ProductSearchParams
+    ProductSearchParams,
+    ProductRequest
 } from '@/types/shop';
 
 export const productService = {
@@ -74,6 +75,50 @@ export const productService = {
     // Get new products
     getNewProducts: async (): Promise<ApiResponse<Product[]>> => {
         const response = await apiClient.get<ApiResponse<Product[]>>('/shop/products/new-arrivals');
+        return response.data;
+    },
+
+    // ==================== ADMIN METHODS ====================
+
+    // Create product (admin only)
+    createProduct: async (data: ProductRequest): Promise<ApiResponse<Product>> => {
+        const response = await apiClient.post<ApiResponse<Product>>('/shop/products', data);
+        return response.data;
+    },
+
+    // Update product (admin only)
+    updateProduct: async (id: number, data: ProductRequest): Promise<ApiResponse<Product>> => {
+        const response = await apiClient.put<ApiResponse<Product>>(`/shop/products/${id}`, data);
+        return response.data;
+    },
+
+    // Delete product (admin only)
+    deleteProduct: async (id: number): Promise<ApiResponse<void>> => {
+        const response = await apiClient.delete<ApiResponse<void>>(`/shop/products/${id}`);
+        return response.data;
+    },
+
+    // Update product status (admin only)
+    updateProductStatus: async (id: number, status: string): Promise<ApiResponse<void>> => {
+        const response = await apiClient.patch<ApiResponse<void>>(
+            `/shop/products/${id}/status`,
+            null,
+            { params: { status } }
+        );
+        return response.data;
+    },
+
+    // Update product stock (admin only)
+    updateProductStock: async (
+        id: number,
+        quantity: number,
+        isIncrease: boolean = true
+    ): Promise<ApiResponse<void>> => {
+        const response = await apiClient.patch<ApiResponse<void>>(
+            `/shop/products/${id}/stock`,
+            null,
+            { params: { quantity, isIncrease } }
+        );
         return response.data;
     },
 };

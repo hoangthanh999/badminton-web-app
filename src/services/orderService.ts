@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 import { ApiResponse, Page } from '@/types/api';
-import { Order, CreateOrderRequest } from '@/types/shop';
+import { Order, CreateOrderRequest, UpdateOrderStatusRequest, ShopStatistics } from '@/types/shop';
 
 export const orderService = {
     // Create order
@@ -33,6 +33,49 @@ export const orderService = {
             `/shop/orders/${id}/cancel`,
             null,
             { params: { reason } }
+        );
+        return response.data;
+    },
+
+    // ==================== ADMIN METHODS ====================
+
+    // Get all orders (admin only)
+    getAllOrders: async (page = 0, size = 10): Promise<ApiResponse<Page<Order>>> => {
+        const response = await apiClient.get<ApiResponse<Page<Order>>>('/shop/orders/admin/all', {
+            params: { page, size },
+        });
+        return response.data;
+    },
+
+    // Get orders by status (admin only)
+    getOrdersByStatus: async (
+        status: string,
+        page = 0,
+        size = 10
+    ): Promise<ApiResponse<Page<Order>>> => {
+        const response = await apiClient.get<ApiResponse<Page<Order>>>(
+            `/shop/orders/admin/status/${status}`,
+            { params: { page, size } }
+        );
+        return response.data;
+    },
+
+    // Update order status (admin only)
+    updateOrderStatus: async (
+        id: number,
+        data: UpdateOrderStatusRequest
+    ): Promise<ApiResponse<Order>> => {
+        const response = await apiClient.patch<ApiResponse<Order>>(
+            `/shop/orders/${id}/status`,
+            data
+        );
+        return response.data;
+    },
+
+    // Get order statistics (admin only)
+    getOrderStatistics: async (): Promise<ApiResponse<ShopStatistics>> => {
+        const response = await apiClient.get<ApiResponse<ShopStatistics>>(
+            '/shop/orders/admin/statistics'
         );
         return response.data;
     },

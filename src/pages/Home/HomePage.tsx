@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import bookingService from '@/services/bookingService';
 import Card from '@/components/UI/Card';
@@ -9,9 +9,18 @@ import { Booking } from '@/types/booking';
 import './HomePage.css';
 
 const HomePage: React.FC = () => {
-    const { user } = useAuth();
+    const { user, isAdmin } = useAuth();
+    const navigate = useNavigate();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Auto-redirect admins to admin panel
+    useEffect(() => {
+        if (isAdmin) {
+            console.log('👤 Admin user detected, redirecting to admin panel...');
+            navigate('/admin', { replace: true });
+        }
+    }, [isAdmin, navigate]);
 
     useEffect(() => {
         const loadData = async () => {
@@ -27,10 +36,13 @@ const HomePage: React.FC = () => {
             }
         };
 
-        loadData();
-    }, []);
+        // Only load bookings if not admin (to avoid unnecessary API calls)
+        if (!isAdmin) {
+            loadData();
+        }
+    }, [isAdmin]);
 
-    if (loading) {
+    if (loading && !isAdmin) {
         return <LoadingSpinner fullScreen />;
     }
 
@@ -45,6 +57,17 @@ const HomePage: React.FC = () => {
 
             <div className="container">
                 <div className="quick-actions">
+                    {/* Show Admin panel card for admin users */}
+                    {isAdmin && (
+                        <Link to="/admin">
+                            <Card hoverable className="action-card">
+                                <div className="action-icon">⚙️</div>
+                                <h3>Admin Panel</h3>
+                                <p>Quản lý hệ thống</p>
+                            </Card>
+                        </Link>
+                    )}
+
                     <Link to="/courts">
                         <Card hoverable className="action-card">
                             <div className="action-icon">🏸</div>

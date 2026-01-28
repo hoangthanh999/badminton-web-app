@@ -1,9 +1,10 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminRoute from '@/components/AdminRoute';
+import AdminLayout from '@/components/Admin/Layout/AdminLayout';
 
 // Auth pages
 import Login from '@/pages/Auth/Login';
@@ -27,9 +28,14 @@ import Profile from '@/pages/Profile/Profile';
 // Admin pages
 import AdminDashboard from '@/pages/Admin/Dashboard';
 import BookingManagement from '@/pages/Admin/Bookings/BookingManagement';
-import CourtManagement from '@/pages/Admin/Courts/CourtManagement';
-import CreateCourt from '@/pages/Admin/Courts/CreateCourt';
-import EditCourt from '@/pages/Admin/Courts/EditCourt';
+import CourtManagement from './pages/Admin/Courts/CourtManagement';
+import CourtForm from './pages/Admin/Courts/CourtForm';
+import ProductManagement from '@/pages/Admin/Products/ProductManagement';
+import ProductForm from '@/pages/Admin/Products/ProductForm';
+import OrderManagement from '@/pages/Admin/Orders/OrderManagement';
+import CategoryManagement from '@/pages/Admin/Categories/CategoryManagement';
+import ReviewManagement from '@/pages/Admin/Reviews/ReviewManagement';
+import UserManagement from '@/pages/Admin/Users/UserManagement';
 
 import '@/styles/global.css';
 
@@ -142,47 +148,28 @@ function App() {
                             }
                         />
 
-                        {/* Admin routes */}
+                        {/* Admin routes - wrapped in AdminLayout */}
                         <Route
                             path="/admin"
                             element={
                                 <AdminRoute>
-                                    <AdminDashboard />
+                                    <AdminLayout />
                                 </AdminRoute>
                             }
-                        />
-                        <Route
-                            path="/admin/bookings"
-                            element={
-                                <AdminRoute>
-                                    <BookingManagement />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/courts"
-                            element={
-                                <AdminRoute>
-                                    <CourtManagement />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/courts/create"
-                            element={
-                                <AdminRoute>
-                                    <CreateCourt />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/courts/edit/:id"
-                            element={
-                                <AdminRoute>
-                                    <EditCourt />
-                                </AdminRoute>
-                            }
-                        />
+                        >
+                            <Route index element={<AdminDashboard />} />
+                            <Route path="bookings" element={<BookingManagement />} />
+                            <Route path="courts" element={<CourtManagement />} />
+                            <Route path="courts/create" element={<CourtForm />} />
+                            <Route path="courts/edit/:id" element={<CourtForm />} />
+                            <Route path="products" element={<ProductManagement />} />
+                            <Route path="products/create" element={<ProductForm />} />
+                            <Route path="products/edit/:id" element={<ProductForm />} />
+                            <Route path="orders" element={<OrderManagement />} />
+                            <Route path="categories" element={<CategoryManagement />} />
+                            <Route path="reviews" element={<ReviewManagement />} />
+                            <Route path="users" element={<UserManagement />} />
+                        </Route>
 
                         {/* Fallback */}
                         <Route path="*" element={<Navigate to="/" replace />} />

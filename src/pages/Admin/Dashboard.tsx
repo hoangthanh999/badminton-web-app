@@ -1,12 +1,18 @@
-// Admin Dashboard - FIX TEXT COLORS
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import bookingService from '@/services/bookingService';
-import Card from '@/components/UI/Card';
-import Button from '@/components/UI/Button';
 import LoadingSpinner from '@/components/UI/LoadingSpinner';
 import { Booking } from '@/types/booking';
+import {
+    Calendar,
+    Clock,
+    CheckCircle,
+    Users,
+    TrendingUp,
+    MapPin,
+    ShoppingCart
+} from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
     const navigate = useNavigate();
@@ -45,64 +51,191 @@ const AdminDashboard: React.FC = () => {
 
     if (loading) return <LoadingSpinner fullScreen />;
 
+    const statCards = [
+        {
+            title: 'Total Bookings',
+            value: stats.total,
+            icon: Calendar,
+            color: 'bg-blue-500',
+            textColor: 'text-blue-600',
+            bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+        },
+        {
+            title: 'Pending',
+            value: stats.pending,
+            icon: Clock,
+            color: 'bg-yellow-500',
+            textColor: 'text-yellow-600',
+            bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
+        },
+        {
+            title: 'Confirmed',
+            value: stats.confirmed,
+            icon: CheckCircle,
+            color: 'bg-green-500',
+            textColor: 'text-green-600',
+            bgColor: 'bg-green-50 dark:bg-green-900/20',
+        },
+        {
+            title: 'Completed',
+            value: stats.completed,
+            icon: TrendingUp,
+            color: 'bg-purple-500',
+            textColor: 'text-purple-600',
+            bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+        },
+    ];
+
+    const quickActions = [
+        {
+            title: 'Manage Bookings',
+            description: 'View and manage all court bookings',
+            icon: Calendar,
+            path: '/admin/bookings',
+            color: 'text-blue-600 dark:text-blue-400',
+        },
+        {
+            title: 'Manage Courts',
+            description: 'Add, edit, or remove courts',
+            icon: MapPin,
+            path: '/admin/courts',
+            color: 'text-green-600 dark:text-green-400',
+        },
+        {
+            title: 'Manage Users',
+            description: 'View and manage user accounts',
+            icon: Users,
+            path: '/admin/users',
+            color: 'text-purple-600 dark:text-purple-400',
+        },
+        {
+            title: 'Shop Orders',
+            description: 'View and process shop orders',
+            icon: ShoppingCart,
+            path: '/admin/orders',
+            color: 'text-orange-600 dark:text-orange-400',
+        },
+    ];
+
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-background)' }}>
-            {/* ✅ FIX: Header gradient với text trắng */}
-            <header style={{
-                background: 'linear-gradient(135deg, #673AB7 0%, #512DA8 100%)',
-                color: 'white', /* ✅ Chỉ header mới có chữ trắng */
-                padding: '1.25rem 0',
-                marginBottom: 'var(--spacing-2xl)',
-            }}>
-                <div className="container">
-                    <h1 style={{ color: 'white', marginBottom: '0.25rem' }}>Admin Dashboard</h1>
-                    <p style={{ color: 'white', opacity: 0.95, margin: 0 }}>Xin chào, {user?.fullName}</p>
-                </div>
-            </header>
-
-            <div className="container">
-                {/* ✅ Stats cards - CHỮ ĐEN */}
-                <div className="quick-actions">
-                    <Card onClick={() => navigate('/admin/bookings')} hoverable className="action-card">
-                        <div className="action-icon">📋</div>
-                        <h2 style={{ color: '#0F172A', margin: '0.5rem 0' }}>{stats.total}</h2>
-                        <p style={{ color: '#64748B', margin: 0 }}>Tổng đặt sân</p>
-                    </Card>
-                    <Card onClick={() => navigate('/admin/bookings')} hoverable className="action-card">
-                        <div className="action-icon">⏳</div>
-                        <h2 style={{ color: '#0F172A', margin: '0.5rem 0' }}>{stats.pending}</h2>
-                        <p style={{ color: '#64748B', margin: 0 }}>Chờ xác nhận</p>
-                    </Card>
-                    <Card onClick={() => navigate('/admin/courts')} hoverable className="action-card">
-                        <div className="action-icon">🏸</div>
-                        <h2 style={{ color: '#0F172A', margin: '0.5rem 0' }}>{stats.confirmed}</h2>
-                        <p style={{ color: '#64748B', margin: 0 }}>Đã xác nhận</p>
-                    </Card>
-                    <Card hoverable className="action-card">
-                        <div className="action-icon">✓</div>
-                        <h2 style={{ color: '#0F172A', margin: '0.5rem 0' }}>{stats.completed}</h2>
-                        <p style={{ color: '#64748B', margin: 0 }}>Hoàn thành</p>
-                    </Card>
-                </div>
-
-                {/* ✅ Management buttons */}
-                <Card className="mt-lg">
-                    <div className="section-header">
-                        <h2 style={{ color: '#0F172A' }}>Quản lý nhanh</h2>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
-                        <Button variant="primary" size="lg" fullWidth onClick={() => navigate('/admin/bookings')}>
-                            Quản lý đặt sân
-                        </Button>
-                        <Button variant="secondary" size="lg" fullWidth onClick={() => navigate('/admin/courts')}>
-                            Quản lý sân
-                        </Button>
-                        <Button variant="outline" size="lg" fullWidth onClick={() => navigate('/')}>
-                            Về trang chủ
-                        </Button>
-                    </div>
-                </Card>
+        <div className="space-y-6">
+            {/* Welcome Section */}
+            <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Dashboard
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    Welcome back, {user?.fullName}!
+                </p>
             </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {statCards.map((stat, index) => (
+                    <div
+                        key={index}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => navigate('/admin/bookings')}
+                    >
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    {stat.title}
+                                </p>
+                                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                                    {stat.value}
+                                </p>
+                            </div>
+                            <div className={`p-3 rounded-lg ${stat.bgColor}`}>
+                                <stat.icon className={`w-6 h-6 ${stat.textColor}`} />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Quick Actions */}
+            <div>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                    Quick Actions
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {quickActions.map((action, index) => (
+                        <button
+                            key={index}
+                            onClick={() => navigate(action.path)}
+                            className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all hover:scale-105 text-left"
+                        >
+                            <action.icon className={`w-8 h-8 ${action.color} mb-3`} />
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                                {action.title}
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {action.description}
+                            </p>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Recent Bookings */}
+            {bookings.length > 0 && (
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                        Recent Bookings
+                    </h2>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                            ID
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                            Court
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                            Date
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                    {bookings.map((booking) => (
+                                        <tr
+                                            key={booking.id}
+                                            className="hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer"
+                                            onClick={() => navigate(`/admin/bookings`)}
+                                        >
+                                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                #{booking.id}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+                                                {booking.courtName || 'N/A'}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                                {new Date(booking.bookingDate).toLocaleDateString()}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${booking.status === 'COMPLETED' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                                        booking.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                                                            booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                                                'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                                                    }`}>
+                                                    {booking.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

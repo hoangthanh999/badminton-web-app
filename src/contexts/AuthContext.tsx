@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const value: AuthContextType = {
         user,
         isAuthenticated: !!user && authService.isAuthenticated(),
-        isAdmin: user?.role === 'ADMIN',
+        isAdmin: user?.role === 'ADMIN' || user?.role === 'OWNER', // ✅ Allow both ADMIN and OWNER
         isOwner: user?.role === 'OWNER',
         loading,
         login,
