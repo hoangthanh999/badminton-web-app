@@ -27,8 +27,12 @@ export const productService = {
         const response = await apiClient.post<ApiResponse<Page<Product>>>('/shop/products/search', {
             keyword: params.keyword,
             categoryId: params.categoryId,
+            brand: params.brand,
             minPrice: params.minPrice,
             maxPrice: params.maxPrice,
+            featured: params.featured,
+            sortBy: params.sortBy || 'createdAt',
+            sortDir: params.sortDir || 'DESC',
             page: params.page || 0,
             size: params.size || 20,
         });

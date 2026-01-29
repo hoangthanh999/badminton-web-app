@@ -24,6 +24,9 @@ const ProductManagement: React.FC = () => {
     const pageSize = parseInt(searchParams.get('size') || '10');
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('');
+    const [brandFilter, setBrandFilter] = useState('');
+    const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
 
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -32,15 +35,24 @@ const ProductManagement: React.FC = () => {
     const loadProducts = async () => {
         try {
             setLoading(true);
-            const data = await productService.getAllProducts(
-                currentPage,
-                pageSize,
-                'createdAt',
-                'DESC'
-            );
+            // ✅ Use searchProducts instead of getAllProducts
+            const data = await productService.searchProducts({
+                keyword: searchTerm || undefined,
+                categoryId: categoryFilter ? parseInt(categoryFilter) : undefined,
+                brand: brandFilter || undefined,
+                page: currentPage,
+                size: pageSize,
+                sortBy: 'createdAt',
+                sortDir: 'DESC'
+            });
 
             if (data.success) {
-                setProducts(data.data.content);
+                // ✅ Filter by status on frontend if needed (backend returns all ACTIVE)
+                let filteredProducts = data.data.content;
+                if (statusFilter) {
+                    filteredProducts = filteredProducts.filter(p => p.status === statusFilter);
+                }
+                setProducts(filteredProducts);
                 setTotalItems(data.data.totalElements);
                 setTotalPages(data.data.totalPages);
             }
@@ -52,9 +64,28 @@ const ProductManagement: React.FC = () => {
         }
     };
 
+    const loadCategories = async () => {
+        try {
+            const data = await productService.getCategories();
+            if (data.success) {
+                setCategories(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading categories:', error);
+        }
+    };
+
     useEffect(() => {
-        loadProducts();
-    }, [currentPage, pageSize]);
+        loadCategories();
+    }, []);
+
+    useEffect(() => {
+        // ✅ Debounce search
+        const timer = setTimeout(() => {
+            loadProducts();
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [currentPage, pageSize, searchTerm, statusFilter, categoryFilter, brandFilter]);
 
     const handleDelete = async () => {
         if (!deleteId) return;
@@ -208,25 +239,55 @@ const ProductManagement: React.FC = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                    <FormInput
-                        placeholder="Tìm kiếm sản phẩm..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full"
-                    />
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Search */}
+                    <div className="lg:col-span-2">
+                        <FormInput
+                            placeholder="Tìm kiếm sản phẩm..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+
+                    {/* Category Filter */}
+                    <div>
+                        <FormSelect
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value)}
+                            options={[
+                                { value: '', label: 'Tất cả danh mục' },
+                                ...categories.map(cat => ({
+                                    value: cat.id.toString(),
+                                    label: cat.name
+                                }))
+                            ]}
+                        />
+                    </div>
+
+                    {/* Status Filter */}
+                    <div>
+                        <FormSelect
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            options={[
+                                { value: '', label: 'Tất cả trạng thái' },
+                                { value: 'ACTIVE', label: 'Hoạt động' },
+                                { value: 'INACTIVE', label: 'Không hoạt động' },
+                                { value: 'OUT_OF_STOCK', label: 'Hết hàng' },
+                            ]}
+                        />
+                    </div>
                 </div>
-                <div className="w-full sm:w-48">
-                    <FormSelect
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        options={[
-                            { value: '', label: 'Tất cả trạng thái' },
-                            { value: 'ACTIVE', label: 'Hoạt động' },
-                            { value: 'INACTIVE', label: 'Không hoạt động' },
-                            { value: 'OUT_OF_STOCK', label: 'Hết hàng' },
-                        ]}
+
+                {/* Brand Filter - Second Row */}
+                <div className="mt-4">
+                    <FormInput
+                        placeholder="Lọc theo thương hiệu (VD: Yonex, Victor, Lining...)"
+                        value={brandFilter}
+                        onChange={(e) => setBrandFilter(e.target.value)}
+                        className="w-full sm:w-64"
                     />
                 </div>
             </div>

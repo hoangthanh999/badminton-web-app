@@ -146,12 +146,14 @@ export interface ShopStatistics {
 export interface ProductSearchParams {
     keyword?: string;
     categoryId?: number;
+    brand?: string;
     minPrice?: number;
     maxPrice?: number;
-    page?: number;
-    size?: number;
+    featured?: boolean;
     sortBy?: string;
     sortDir?: string;
+    page?: number;
+    size?: number;
 }
 
 export interface CreateOrderRequest {
